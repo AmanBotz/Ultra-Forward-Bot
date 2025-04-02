@@ -1,7 +1,7 @@
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
 # For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
-
+import re
 import os
 import sys 
 import math
@@ -22,7 +22,6 @@ CLIENT = CLIENT()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 TEXT = Translation.TEXT
-
 
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
@@ -258,22 +257,29 @@ async def send(bot, user, text):
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
 # For Any Kind Of Error Ask Us In Support Group @Silicon_Botz 
-
+def remove_usernames(text):
+    return re.sub(r'@\w+', '', text).strip() if text else ""
 
 def custom_caption(msg, caption):
-  if msg.media:
-    if (msg.video or msg.document or msg.audio or msg.photo):
-      media = getattr(msg, msg.media.value, None)
-      if media:
-        file_name = getattr(media, 'file_name', '')
-        file_size = getattr(media, 'file_size', '')
-        fcaption = getattr(msg, 'caption', '')
-        if fcaption:
-          fcaption = fcaption.html
-        if caption:
-          return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
-        return fcaption
-  return None
+    if msg.media:
+        media = getattr(msg, msg.media.value, None)
+        raw_filename = getattr(media, 'file_name', 'No Name')
+        
+        # Clean both filename and original caption
+        cleaned_filename = remove_usernames(raw_filename)
+        original_caption = remove_usernames(getattr(msg, 'caption', ''))
+        
+        # Default to cleaned filename if no custom caption
+        if not caption:
+            return cleaned_filename  # 👈 Now uses cleaned filename
+            
+        return caption.format(
+            filename=cleaned_filename,  # 👈 Cleaned filename
+            size=get_size(getattr(media, 'file_size', 0)),
+            caption=original_caption    # 👈 Cleaned caption
+        )
+    return ""
+# -------------------------------------------
 
 #Dont Remove My Credit @Silicon_Bot_Update 
 #This Repo Is By @Silicon_Official 
