@@ -104,7 +104,7 @@ async def pub_(bot, message):
                         or completed <= 100): 
                       await forward(client, MSG, m, sts, protect)
                       sts.add('total_files', notcompleted)
-                      await asyncio.sleep(5)
+                      await asyncio.sleep(10)
                       MSG = []
                 else:
                    new_caption = custom_caption(message, caption)
